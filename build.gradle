@@ -1,0 +1,58 @@
+buildscript {
+    ext {
+        springBootVersion = '2.4.10'
+        springBootAdminVersion = '2.3.0'
+        springFrameworkVersion = '5.2.8.RELEASE'
+        springSecurityVersion = '5.3.4.RELEASE'
+        lombokVersion = '1.18.12'
+        jacksonVersion = '2.12.5'
+        hibernateVersion = '5.4.32.Final'
+        springCloudAwsVersion = '2.2.5.RELEASE'
+        springCloudVersion = '2020.0.0'
+        retrofitVersion = "2.9.0"
+    }
+    repositories {
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath ("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath ("io.spring.gradle:dependency-management-plugin:1.0.10.RELEASE")
+    }
+}
+
+plugins {
+    id 'org.springframework.boot' version '2.6.6'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    implementation ("com.fasterxml.jackson.core:jackson-core:2.12.5")
+    implementation ("com.fasterxml.jackson.core:jackson-annotations:2.12.5")
+    implementation ("com.fasterxml.jackson.core:jackson-databind:2.12.5")
+    implementation ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.5")
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
