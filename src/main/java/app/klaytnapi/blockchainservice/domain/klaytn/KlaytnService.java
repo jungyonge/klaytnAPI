@@ -4,5 +4,5 @@ public interface KlaytnService {
 
     Block getBlockByNumber(String blockNumber);
 
-    Transaction getTransactionByHash(String transactionHash);
+    KlaytnTransaction getTransactionByHash(String transactionHash);
 }

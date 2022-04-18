@@ -1,13 +1,11 @@
-package app.klaytnapi.blockchainservice.infrastructure.domain.klaytnpublicnode;
+package app.klaytnapi.blockchainservice.infrastructure.domain.klaytn;
 
 import app.klaytnapi.blockchainservice.domain.klaytn.Block;
 import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnService;
-import app.klaytnapi.blockchainservice.domain.klaytn.Transaction;
+import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnTransaction;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -42,11 +40,10 @@ public class KlaytnPublicNodeServiceImpl implements KlaytnService {
 
         Block response = restTemplate.postForObject(publicNode, request, Block.class);
 
-        ArrayList<Map> trans = (ArrayList<Map>) response.getResult().get("transactions");
         return response;
     }
 
-    public Transaction getTransactionByHash(String transactionHash){
+    public KlaytnTransaction getTransactionByHash(String transactionHash){
         HttpHeaders headers = new HttpHeaders();
         HashMap<String, Object> params = new HashMap<>();
 
@@ -58,7 +55,7 @@ public class KlaytnPublicNodeServiceImpl implements KlaytnService {
 
         HttpEntity<HashMap<String, Object>> request = new HttpEntity<>(params, headers);
 
-        Transaction response = restTemplate.postForObject(publicNode, request, Transaction.class);
+        KlaytnTransaction response = restTemplate.postForObject(publicNode, request, KlaytnTransaction.class);
 
         return response;
     }

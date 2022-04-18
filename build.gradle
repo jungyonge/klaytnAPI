@@ -39,6 +39,7 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven { url "https://plugins.gradle.org/m2/" }
 }
 
 dependencies {
@@ -62,6 +63,8 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.5.0'
 
     implementation ("com.github.ulisesbocchio:jasypt-spring-boot-starter:1.17")
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb:2.6.6'
+
 
     implementation ("org.modelmapper:modelmapper:2.3.0")
 
