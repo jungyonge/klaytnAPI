@@ -1,33 +1,29 @@
 package app.klaytnapi.blockchainservice.infrastructure.domain.klaytnpublicnode;
 
 import app.klaytnapi.blockchainservice.domain.klaytn.Block;
+import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnService;
 import app.klaytnapi.blockchainservice.domain.klaytn.Transaction;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @Component
-public class KlaytnPublicNodeClient {
+public class KlaytnPublicNodeServiceImpl implements KlaytnService {
     private final String publicNode = "https://api.baobab.klaytn.net:8651";
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final RestTemplate restTemplate;
 
-    public KlaytnPublicNodeClient(RestTemplate restTemplate) {
+    public KlaytnPublicNodeServiceImpl(RestTemplate restTemplate) {
 
         this.restTemplate = restTemplate;
     }
@@ -46,6 +42,11 @@ public class KlaytnPublicNodeClient {
 
         Block response = restTemplate.postForObject(publicNode, request, Block.class);
 
+        ArrayList<Map> trans = (ArrayList<Map>) response.getResult().get("transactions");
+        System.out.println(trans.size());
+        if(trans.size() > 0){
+            System.out.println(111);
+        }
         return response;
     }
 
@@ -68,8 +69,8 @@ public class KlaytnPublicNodeClient {
 
     public static void main(String[] args) {
         RestTemplate restTemplate = new RestTemplate();
-        KlaytnPublicNodeClient klaytnPublicNodeClient = new KlaytnPublicNodeClient(restTemplate);
-        for(int i = 0 ; i < 100 ; i++){
+        KlaytnPublicNodeServiceImpl klaytnPublicNodeClient = new KlaytnPublicNodeServiceImpl(restTemplate);
+        for(int i = 88692228 ; i < 88692328 ; i++){
             String blockNumber = "0x"+ Integer.toHexString(i);
             System.out.println(blockNumber);
             klaytnPublicNodeClient.getBlockByNumber(blockNumber);

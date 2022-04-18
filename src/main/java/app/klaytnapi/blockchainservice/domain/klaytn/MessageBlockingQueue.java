@@ -6,6 +6,6 @@ import java.util.concurrent.BlockingQueue;
 
 public class MessageBlockingQueue {
 
-    public static BlockingQueue<Map> queue = new ArrayBlockingQueue<Map>(30);
+    public static ArrayBlockingQueue<Map> queue = new ArrayBlockingQueue<>(30);
 
 }
