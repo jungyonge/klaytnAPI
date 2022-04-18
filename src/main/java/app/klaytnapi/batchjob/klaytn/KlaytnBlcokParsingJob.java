@@ -1,23 +1,33 @@
 package app.klaytnapi.batchjob.klaytn;
 
-import lombok.AllArgsConstructor;
+import app.klaytnapi.blockchainservice.application.klaytn.KlaytnConsumer;
+import app.klaytnapi.blockchainservice.application.klaytn.KlaytnProducer;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Component
-@AllArgsConstructor
 public class KlaytnBlcokParsingJob {
 
-    @Scheduled(fixedDelay = 600000)
-    @Transactional(rollbackFor = Exception.class)
+    private final Runnable klaytnProducer;
+    private final Runnable klaytnConsumer;
+
+    public KlaytnBlcokParsingJob(
+            @Qualifier("klaytnProducer") Runnable klaytnProducer,
+            @Qualifier("klaytnConsumer") Runnable klaytnConsumer) {
+        this.klaytnProducer = klaytnProducer;
+        this.klaytnConsumer = klaytnConsumer;
+    }
+
+    @Scheduled(fixedDelay = 1000)
     public void producerJob() {
+        new Thread(klaytnProducer).start();
+
     }
 
 
-    @Scheduled(fixedDelay = 600000)
-    @Transactional(rollbackFor = Exception.class)
+    @Scheduled(fixedDelay = 1000)
     public void consumerJob() {
-        // todo - 오픈씨 컬렉션 이름 가져오기
+        new Thread(klaytnConsumer).start();
     }
 }

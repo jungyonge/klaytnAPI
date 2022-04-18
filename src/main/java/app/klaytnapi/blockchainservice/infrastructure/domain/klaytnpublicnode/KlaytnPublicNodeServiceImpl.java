@@ -43,10 +43,6 @@ public class KlaytnPublicNodeServiceImpl implements KlaytnService {
         Block response = restTemplate.postForObject(publicNode, request, Block.class);
 
         ArrayList<Map> trans = (ArrayList<Map>) response.getResult().get("transactions");
-        System.out.println(trans.size());
-        if(trans.size() > 0){
-            System.out.println(111);
-        }
         return response;
     }
 
