@@ -2,7 +2,7 @@ package app.klaytnapi.blockchainservice.application.klaytn;
 
 import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnTransaction;
 import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnTransactionRepository;
-import app.klaytnapi.blockchainservice.domain.klaytn.MessageBlockingQueue;
+import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnTransactionQueue;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import lombok.AllArgsConstructor;
@@ -22,8 +22,8 @@ public class KlaytnConsumer implements Runnable {
         while (true){
             Map transaction = null;
             try {
-                if(!MessageBlockingQueue.queue.isEmpty()){
-                    transaction = MessageBlockingQueue.queue.poll(1, TimeUnit.SECONDS);
+                if(!KlaytnTransactionQueue.queue.isEmpty()){
+                    transaction = KlaytnTransactionQueue.queue.poll(1, TimeUnit.SECONDS);
                     KlaytnTransaction klaytnTransaction = KlaytnTransaction.create(transaction.get("hash").toString(), transaction.get("type").toString(),
                             (Integer) transaction.get("timestamp"));
                     klaytnTransactionRepository.save(klaytnTransaction);

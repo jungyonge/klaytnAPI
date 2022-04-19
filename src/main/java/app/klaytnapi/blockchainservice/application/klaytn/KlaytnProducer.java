@@ -1,48 +1,61 @@
 package app.klaytnapi.blockchainservice.application.klaytn;
 
-import app.klaytnapi.blockchainservice.domain.klaytn.Block;
+import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnBlock;
+import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnBlockNumber;
+import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnBlockNumberRepository;
+import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnBlockStatus;
 import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnService;
-import app.klaytnapi.blockchainservice.domain.klaytn.MessageBlockingQueue;
+import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnTransactionQueue;
 import java.util.ArrayList;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class KlaytnProducer implements Runnable {
 
     private final KlaytnService klaytnPublicNodeService;
+    private final KlaytnBlockNumberRepository klaytnBlockNumberRepository;
 
-    int lastedBlockNumber = 88719974;
-    int currentBlockNumber = 88720810;
+    int recentlyBlockNumber = 0;
+    int currentParsingBlockNumber = 0;
 
     public KlaytnProducer(
-            @Qualifier("klaytnPublicNodeServiceImpl")KlaytnService klaytnPublicNodeService) {
+            @Qualifier("klaytnPublicNodeServiceImpl") KlaytnService klaytnPublicNodeService,
+            KlaytnBlockNumberRepository klaytnBlockNumberRepository) {
 
         this.klaytnPublicNodeService = klaytnPublicNodeService;
+        this.klaytnBlockNumberRepository = klaytnBlockNumberRepository;
     }
 
     @Override
+    @Transactional
     public void run() {
+
+
+        Map recentlyKlaytnBlockNumber = klaytnPublicNodeService.getBlockNumber();
+
+        KlaytnBlockNumber klaytnBlockNumber = klaytnBlockNumberRepository.getKlaytnBlockNumberByStatus(KlaytnBlockStatus.CURRENT_PARSING_BLOCK_NUMBER);
 
         try {
             while (true){
-
-                System.out.println("blocknumber: " + lastedBlockNumber);
-                Block block = klaytnPublicNodeService.getBlockByNumber("0x" + Integer.toHexString(lastedBlockNumber));
-                ArrayList<Map> transactions = (ArrayList<Map>) block.getResult().get("transactions");
+                System.out.println("blocknumber: " + currentParsingBlockNumber);
+                KlaytnBlock klaytnBlock = klaytnPublicNodeService.getBlockByNumber("0x" + Integer.toHexString(currentParsingBlockNumber));
+                ArrayList<Map> transactions = (ArrayList<Map>) klaytnBlock.getResult().get("transactions");
                 if(!transactions.isEmpty()){
-                    int timestamp = Integer.parseInt(block.getResult().get("timestamp").toString().replaceFirst("^0x",""),16);
+                    int timestamp = Integer.parseInt(
+                            klaytnBlock.getResult().get("timestamp").toString().replaceFirst("^0x",""),16);
                     for(Map transaction : transactions){
                         transaction.put("timestamp", timestamp);
                         System.out.println(transaction);
-                        MessageBlockingQueue.queue.put(transaction);
+                        KlaytnTransactionQueue.queue.put(transaction);
                     }
                 }
-                if(lastedBlockNumber == currentBlockNumber){
+                if(recentlyBlockNumber == currentParsingBlockNumber){
                     break;
                 }
-                lastedBlockNumber++;
+                currentParsingBlockNumber++;
             }
 
             System.out.println("Produced ");

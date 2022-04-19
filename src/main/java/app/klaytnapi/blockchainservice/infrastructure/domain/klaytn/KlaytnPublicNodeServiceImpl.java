@@ -1,11 +1,12 @@
 package app.klaytnapi.blockchainservice.infrastructure.domain.klaytn;
 
-import app.klaytnapi.blockchainservice.domain.klaytn.Block;
+import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnBlock;
 import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnService;
 import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnTransaction;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -26,7 +27,23 @@ public class KlaytnPublicNodeServiceImpl implements KlaytnService {
         this.restTemplate = restTemplate;
     }
 
-    public Block getBlockByNumber(String blockNumber){
+    @Override
+    public Map getBlockNumber() {
+        HttpHeaders headers = new HttpHeaders();
+        HashMap<String, Object> params = new HashMap<>();
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        params.put("jsonrpc", "2.0");
+        params.put("method", "klay_blockNumber");
+        params.put("params", Arrays.asList());
+        params.put("id", "83");
+
+        HttpEntity<HashMap<String, Object>> request = new HttpEntity<>(params, headers);
+
+        return restTemplate.postForObject(publicNode, request, Map.class);
+    }
+
+    public KlaytnBlock getBlockByNumber(String blockNumber){
         HttpHeaders headers = new HttpHeaders();
         HashMap<String, Object> params = new HashMap<>();
 
@@ -38,9 +55,7 @@ public class KlaytnPublicNodeServiceImpl implements KlaytnService {
 
         HttpEntity<HashMap<String, Object>> request = new HttpEntity<>(params, headers);
 
-        Block response = restTemplate.postForObject(publicNode, request, Block.class);
-
-        return response;
+        return restTemplate.postForObject(publicNode, request, KlaytnBlock.class);
     }
 
     public KlaytnTransaction getTransactionByHash(String transactionHash){
@@ -55,20 +70,6 @@ public class KlaytnPublicNodeServiceImpl implements KlaytnService {
 
         HttpEntity<HashMap<String, Object>> request = new HttpEntity<>(params, headers);
 
-        KlaytnTransaction response = restTemplate.postForObject(publicNode, request, KlaytnTransaction.class);
-
-        return response;
-    }
-
-    public static void main(String[] args) {
-        RestTemplate restTemplate = new RestTemplate();
-        KlaytnPublicNodeServiceImpl klaytnPublicNodeClient = new KlaytnPublicNodeServiceImpl(restTemplate);
-        for(int i = 88692228 ; i < 88692328 ; i++){
-            String blockNumber = "0x"+ Integer.toHexString(i);
-            System.out.println(blockNumber);
-            klaytnPublicNodeClient.getBlockByNumber(blockNumber);
-//            klaytnPublicNodeClient.getTransactionByHash("0x4a527dacab0c8d5829ad060a11b19afa29215bd5475ca9672b6ca6fcff15ac47");
-        }
-
+        return restTemplate.postForObject(publicNode, request, KlaytnTransaction.class);
     }
 }

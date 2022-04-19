@@ -1,8 +1,12 @@
 package app.klaytnapi.blockchainservice.domain.klaytn;
 
+import java.util.Map;
+
 public interface KlaytnService {
 
-    Block getBlockByNumber(String blockNumber);
+    Map getBlockNumber();
+
+    KlaytnBlock getBlockByNumber(String blockNumber);
 
     KlaytnTransaction getTransactionByHash(String transactionHash);
 }

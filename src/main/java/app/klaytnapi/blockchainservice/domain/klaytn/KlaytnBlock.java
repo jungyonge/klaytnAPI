@@ -13,11 +13,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Block {
+public class KlaytnBlock {
 
     private String jsonrpc;
     private int id;
     private Map result;
-
 
 }
