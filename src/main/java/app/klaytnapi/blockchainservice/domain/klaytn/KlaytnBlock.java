@@ -1,22 +1,56 @@
 package app.klaytnapi.blockchainservice.domain.klaytn;
 
-import java.util.Map;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Document(collection = "klaytnBlock")
 public class KlaytnBlock {
 
-    private String jsonrpc;
-    private int id;
-    private Map result;
+    @Id
+    private String _id;
+    private String blockHash;
+    private long blockNumber;
+    private int transactionCount;
+    private int totalKlayValues;
+    private long timestamp;
 
+    private KlaytnBlock(String blockHash, long blockNumber, int transactionCount,
+            int totalKlayValues, long timestamp) {
+        this.setBlockHash(blockHash);
+        this.setBlockNumber(blockNumber);
+        this.setTransactionCount(transactionCount);
+        this.setTotalKlayValue(totalKlayValues);
+        this.setTimestamp(timestamp);
+    }
+
+    public static KlaytnBlock create(String blockHash, long blockNumber, int transactionCount,
+            int totalKlayValues, long timestamp) {
+        return new KlaytnBlock(blockHash, blockNumber, transactionCount, totalKlayValues,
+                timestamp);
+    }
+
+    private void setBlockHash(String blockHash) {
+        this.blockHash = blockHash;
+    }
+
+    private void setBlockNumber(long blockNumber) {
+        this.blockNumber = blockNumber;
+    }
+
+    private void setTransactionCount(int transactionCount) {
+        this.transactionCount = transactionCount;
+    }
+
+    private void setTotalKlayValue(int totalKlayValues) {
+        this.totalKlayValues = totalKlayValues;
+    }
+
+    private void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
 }

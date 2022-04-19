@@ -1,6 +1,5 @@
 package app.klaytnapi.blockchainservice.infrastructure.domain.klaytn;
 
-import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnBlock;
 import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnService;
 import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnTransaction;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,7 +42,7 @@ public class KlaytnPublicNodeServiceImpl implements KlaytnService {
         return restTemplate.postForObject(publicNode, request, Map.class);
     }
 
-    public KlaytnBlock getBlockByNumber(String blockNumber){
+    public Map getBlockByNumber(String blockNumber){
         HttpHeaders headers = new HttpHeaders();
         HashMap<String, Object> params = new HashMap<>();
 
@@ -55,7 +54,7 @@ public class KlaytnPublicNodeServiceImpl implements KlaytnService {
 
         HttpEntity<HashMap<String, Object>> request = new HttpEntity<>(params, headers);
 
-        return restTemplate.postForObject(publicNode, request, KlaytnBlock.class);
+        return restTemplate.postForObject(publicNode, request, Map.class);
     }
 
     public KlaytnTransaction getTransactionByHash(String transactionHash){

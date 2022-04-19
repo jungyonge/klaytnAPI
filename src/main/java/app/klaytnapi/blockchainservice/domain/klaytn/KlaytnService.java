@@ -6,7 +6,7 @@ public interface KlaytnService {
 
     Map getBlockNumber();
 
-    KlaytnBlock getBlockByNumber(String blockNumber);
+    Map getBlockByNumber(String blockNumber);
 
     KlaytnTransaction getTransactionByHash(String transactionHash);
 }

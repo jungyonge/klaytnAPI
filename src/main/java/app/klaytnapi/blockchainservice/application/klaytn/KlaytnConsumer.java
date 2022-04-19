@@ -1,33 +1,64 @@
 package app.klaytnapi.blockchainservice.application.klaytn;
 
+import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnBlock;
+import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnQueue;
 import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnTransaction;
 import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnTransactionRepository;
-import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnTransactionQueue;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.klaytn.caver.utils.Utils;
+import com.klaytn.caver.utils.Utils.KlayUnit;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.web3j.utils.Numeric;
 
 @Service
 @AllArgsConstructor
 @Slf4j
-public class KlaytnConsumer implements Runnable {
+public class KlaytnConsumer {
 
     private final KlaytnTransactionRepository klaytnTransactionRepository;
+    private final KlaytnBlockParsingHandler klaytnBlockParsingHandler;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ModelMapper modelMapper;
 
-    @Override
-    public void run() {
 
-        while (true){
-            Map transaction = null;
+    public void consumer() {
+
+        while (true) {
+            Map block = null;
             try {
-                if(!KlaytnTransactionQueue.queue.isEmpty()){
-                    transaction = KlaytnTransactionQueue.queue.poll(1, TimeUnit.SECONDS);
-                    KlaytnTransaction klaytnTransaction = KlaytnTransaction.create(transaction.get("hash").toString(), transaction.get("type").toString(),
-                            (Integer) transaction.get("timestamp"));
-                    klaytnTransactionRepository.save(klaytnTransaction);
-                    System.out.println("Transaction : " + transaction.get("hash") );
+                if (!KlaytnQueue.queue.isEmpty()) {
+                    block = KlaytnQueue.queue.poll(1, TimeUnit.SECONDS);
+
+                    long timestamp = Long.parseLong(
+                            block.get("timestamp").toString().replaceFirst("^0x", ""), 16);
+                    long blockNumber = Long.parseLong(
+                            block.get("number").toString().replaceFirst("^0x", ""), 16);
+                    int totalKlayValues = 0;
+
+                    ArrayList<Map> transactions = (ArrayList<Map>) block.get("transactions");
+
+                    for (Map transaction : transactions) {
+                        int value = Integer.parseInt(Utils.convertFromPeb(new BigDecimal(
+                                Numeric.toBigInt(transaction.get("value").toString())), KlayUnit.KLAY));
+                        KlaytnTransaction klaytnTransaction = KlaytnTransaction.create(
+                                transaction.get("hash").toString(),
+                                transaction.get("type").toString(),
+                                value, blockNumber, timestamp);
+                        klaytnBlockParsingHandler.insertKlaytnTransaction(klaytnTransaction);
+                        totalKlayValues += value;
+                        System.out.println("Transaction : " + transaction.get("hash"));
+                    }
+
+                    KlaytnBlock klaytnBlock = KlaytnBlock.create(String.valueOf(block.get("hash")),
+                            blockNumber, transactions.size(), totalKlayValues, timestamp);
+                    klaytnBlockParsingHandler.insertKlaytnBlock(klaytnBlock);
                 } else {
                     break;
                 }
@@ -35,8 +66,6 @@ public class KlaytnConsumer implements Runnable {
                 e.printStackTrace();
             }
 
-
         }
-
     }
 }

@@ -1,31 +1,32 @@
 package app.klaytnapi.batchjob.klaytn;
 
-import org.springframework.beans.factory.annotation.Qualifier;
+import app.klaytnapi.blockchainservice.application.klaytn.KlaytnConsumer;
+import app.klaytnapi.blockchainservice.application.klaytn.KlaytnProducer;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
 public class KlaytnBlcokParsingJob {
 
-    private final Runnable klaytnProducer;
-    private final Runnable klaytnConsumer;
+    private final KlaytnProducer klaytnProducer;
+    private final KlaytnConsumer klaytnConsumer;
 
     public KlaytnBlcokParsingJob(
-            @Qualifier("klaytnProducer") Runnable klaytnProducer,
-            @Qualifier("klaytnConsumer") Runnable klaytnConsumer) {
+            KlaytnProducer klaytnProducer,
+            KlaytnConsumer klaytnConsumer) {
+
         this.klaytnProducer = klaytnProducer;
         this.klaytnConsumer = klaytnConsumer;
     }
 
     @Scheduled(fixedDelay = 1000)
     public void producerJob() {
-        new Thread(klaytnProducer).start();
-
+        klaytnProducer.producer();
     }
 
 
     @Scheduled(fixedDelay = 1000)
     public void consumerJob() {
-        new Thread(klaytnConsumer).start();
+        klaytnConsumer.consumer();
     }
 }
