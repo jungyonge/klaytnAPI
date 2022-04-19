@@ -1,7 +1,6 @@
 package app.klaytnapi.blockchainservice.application.klaytn;
 
 import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnBlock;
-import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnBlockNumber;
 import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnBlockNumberRepository;
 import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnBlockStatus;
 import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnService;
@@ -17,31 +16,35 @@ public class KlaytnProducer implements Runnable {
 
     private final KlaytnService klaytnPublicNodeService;
     private final KlaytnBlockNumberRepository klaytnBlockNumberRepository;
+    private final KlaytnBlockParsingHandler klaytnBlockParsingHandler;
 
-    int recentlyBlockNumber = 0;
-    int currentParsingBlockNumber = 0;
+    long recentlyBlockNumber = 0;
+    long currentParsingBlockNumber = 0;
 
     public KlaytnProducer(
             @Qualifier("klaytnPublicNodeServiceImpl") KlaytnService klaytnPublicNodeService,
-            KlaytnBlockNumberRepository klaytnBlockNumberRepository) {
+            KlaytnBlockNumberRepository klaytnBlockNumberRepository,
+            KlaytnBlockParsingHandler klaytnBlockParsingHandler) {
 
         this.klaytnPublicNodeService = klaytnPublicNodeService;
         this.klaytnBlockNumberRepository = klaytnBlockNumberRepository;
+        this.klaytnBlockParsingHandler = klaytnBlockParsingHandler;
     }
 
     @Override
     @Transactional
     public void run() {
 
+        recentlyBlockNumber = Long.parseLong(klaytnPublicNodeService.getBlockNumber().get("result").toString().replaceFirst("^0x",""),16);
 
-        Map recentlyKlaytnBlockNumber = klaytnPublicNodeService.getBlockNumber();
+        klaytnBlockParsingHandler.updateKlaytnBlockNumber(KlaytnBlockStatus.RECENTLY_BLOCK_NUMBER, recentlyBlockNumber);
 
-        KlaytnBlockNumber klaytnBlockNumber = klaytnBlockNumberRepository.getKlaytnBlockNumberByStatus(KlaytnBlockStatus.CURRENT_PARSING_BLOCK_NUMBER);
+        currentParsingBlockNumber = klaytnBlockParsingHandler.getKlaytnBlockNumber(KlaytnBlockStatus.CURRENT_PARSING_BLOCK_NUMBER);
 
         try {
             while (true){
                 System.out.println("blocknumber: " + currentParsingBlockNumber);
-                KlaytnBlock klaytnBlock = klaytnPublicNodeService.getBlockByNumber("0x" + Integer.toHexString(currentParsingBlockNumber));
+                KlaytnBlock klaytnBlock = klaytnPublicNodeService.getBlockByNumber("0x" + Long.toHexString(currentParsingBlockNumber));
                 ArrayList<Map> transactions = (ArrayList<Map>) klaytnBlock.getResult().get("transactions");
                 if(!transactions.isEmpty()){
                     int timestamp = Integer.parseInt(
@@ -52,6 +55,7 @@ public class KlaytnProducer implements Runnable {
                         KlaytnTransactionQueue.queue.put(transaction);
                     }
                 }
+                klaytnBlockParsingHandler.updateKlaytnBlockNumber(KlaytnBlockStatus.CURRENT_PARSING_BLOCK_NUMBER, currentParsingBlockNumber);
                 if(recentlyBlockNumber == currentParsingBlockNumber){
                     break;
                 }

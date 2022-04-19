@@ -20,7 +20,7 @@ public class KlaytnBlockNumber {
         this.setBlockNumber(blockNumber);
     }
 
-    public KlaytnBlockNumber create(KlaytnBlockStatus status, long blockNumber){
+    public static KlaytnBlockNumber create(KlaytnBlockStatus status, long blockNumber){
         return new KlaytnBlockNumber(status, blockNumber);
     }
 
