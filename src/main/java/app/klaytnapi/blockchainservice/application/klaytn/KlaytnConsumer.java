@@ -54,7 +54,6 @@ public class KlaytnConsumer {
                                 transaction.get("from").toString(),
                                 transaction.get("to").toString());
                         klaytnBlockParsingHandler.insertKlaytnTransaction(klaytnTransaction);
-                        totalKlayValues += value;
                         System.out.println("Transaction : " + transaction.get("hash"));
                     }
 
@@ -66,7 +65,7 @@ public class KlaytnConsumer {
                     break;
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
 
         }

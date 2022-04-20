@@ -4,10 +4,12 @@ import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnBlockStatus;
 import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnQueue;
 import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnService;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 public class KlaytnProducer {
 
@@ -44,7 +46,7 @@ public class KlaytnProducer {
             }
 
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
     }
