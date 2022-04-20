@@ -17,10 +17,12 @@ public class KlaytnBlockSearchHandler {
     public List<KlaytnBlock> getBlock(long from, long to, Double totalKlayValues, Integer transactionCount) {
 
         List<KlaytnBlock> result;
-        if (totalKlayValues > 0) {
+        if (totalKlayValues != null) {
             result = klaytnBlockRepository.getBlockByTotalKlayValues(totalKlayValues, from, to);
-        } else {
+        } else if(transactionCount != null){
             result = klaytnBlockRepository.getBlockByTransactionCount(transactionCount, from, to);
+        } else {
+            result = klaytnBlockRepository.getBlock(from, to);
         }
 
         if (result == null) {

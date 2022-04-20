@@ -18,13 +18,18 @@ public class KlaytnBlockRepositoryImpl implements KlaytnBlockRepository {
     }
 
     @Override
+    public List<KlaytnBlock> getBlock(long from, long to) {
+        return klaytnBlockMongoRepository.getKlaytnBlockByTimestampBetween(from, to);
+    }
+
+    @Override
     public List<KlaytnBlock> getBlockByTransactionCount(int count, long from, long to) {
-        return klaytnBlockMongoRepository.getBlockByTransactionCountGreaterThanEqualAndTimestampBetween(count, from, to);
+        return klaytnBlockMongoRepository.getKlaytnBlockByTransactionCountGreaterThanEqualAndTimestampBetween(count, from, to);
     }
 
     @Override
     public List<KlaytnBlock> getBlockByTotalKlayValues(double totalKlayValues, long from, long to) {
-        return klaytnBlockMongoRepository.getBlockByTotalKlayValuesGreaterThanEqualAndTimestampBetween(totalKlayValues, from, to);
+        return klaytnBlockMongoRepository.getKlaytnBlockByTotalKlayValuesGreaterThanEqualAndTimestampBetween(totalKlayValues, from, to);
     }
 
 
