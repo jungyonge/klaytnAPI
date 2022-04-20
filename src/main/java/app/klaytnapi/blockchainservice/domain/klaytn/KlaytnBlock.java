@@ -16,11 +16,11 @@ public class KlaytnBlock {
     private String blockHash;
     private long blockNumber;
     private int transactionCount;
-    private int totalKlayValues;
+    private double totalKlayValues;
     private long timestamp;
 
     private KlaytnBlock(String blockHash, long blockNumber, int transactionCount,
-            int totalKlayValues, long timestamp) {
+            double totalKlayValues, long timestamp) {
         this.setBlockHash(blockHash);
         this.setBlockNumber(blockNumber);
         this.setTransactionCount(transactionCount);
@@ -29,7 +29,7 @@ public class KlaytnBlock {
     }
 
     public static KlaytnBlock create(String blockHash, long blockNumber, int transactionCount,
-            int totalKlayValues, long timestamp) {
+            double totalKlayValues, long timestamp) {
         return new KlaytnBlock(blockHash, blockNumber, transactionCount, totalKlayValues,
                 timestamp);
     }
@@ -46,7 +46,7 @@ public class KlaytnBlock {
         this.transactionCount = transactionCount;
     }
 
-    private void setTotalKlayValue(int totalKlayValues) {
+    private void setTotalKlayValue(double totalKlayValues) {
         this.totalKlayValues = totalKlayValues;
     }
 

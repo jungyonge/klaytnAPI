@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.web3j.utils.Numeric;
 
 @Service
@@ -27,9 +28,8 @@ public class KlaytnConsumer {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final ModelMapper modelMapper;
 
-
+    @Transactional
     public void consumer() {
-
         while (true) {
             Map block = null;
             try {
@@ -40,12 +40,12 @@ public class KlaytnConsumer {
                             block.get("timestamp").toString().replaceFirst("^0x", ""), 16);
                     long blockNumber = Long.parseLong(
                             block.get("number").toString().replaceFirst("^0x", ""), 16);
-                    int totalKlayValues = 0;
+                    double totalKlayValues = 0;
 
                     ArrayList<Map> transactions = (ArrayList<Map>) block.get("transactions");
 
                     for (Map transaction : transactions) {
-                        int value = Integer.parseInt(Utils.convertFromPeb(new BigDecimal(
+                        double value = Double.parseDouble(Utils.convertFromPeb(new BigDecimal(
                                 Numeric.toBigInt(transaction.get("value").toString())), KlayUnit.KLAY));
                         KlaytnTransaction klaytnTransaction = KlaytnTransaction.create(
                                 transaction.get("hash").toString(),
@@ -58,11 +58,12 @@ public class KlaytnConsumer {
 
                     KlaytnBlock klaytnBlock = KlaytnBlock.create(String.valueOf(block.get("hash")),
                             blockNumber, transactions.size(), totalKlayValues, timestamp);
-                    klaytnBlockParsingHandler.insertKlaytnBlock(klaytnBlock);
+                    klaytnBlockParsingHandler.insertKlaytnBlock(klaytnBlock, blockNumber);
+
                 } else {
                     break;
                 }
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 

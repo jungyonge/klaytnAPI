@@ -15,10 +15,11 @@ public class KlaytnTransaction {
     private String txHash;
     private String txType;
     private long blockNumber;
-    private int value;
+    private double value;
     private long timestamp;
 
-    private KlaytnTransaction(String txHash, String txType,int value,long blockNumber, long timestamp) {
+    private KlaytnTransaction(String txHash, String txType, double value, long blockNumber,
+            long timestamp) {
         this.setTxHash(txHash);
         this.setTxType(txType);
         this.setTimestamp(timestamp);
@@ -26,7 +27,8 @@ public class KlaytnTransaction {
         this.setValue(value);
     }
 
-    public static KlaytnTransaction create(String txHash, String txType, int value, long blockNumber, long timestamp) {
+    public static KlaytnTransaction create(String txHash, String txType, double value,
+            long blockNumber, long timestamp) {
 
         return new KlaytnTransaction(txHash, txType, value, blockNumber, timestamp);
     }
@@ -43,7 +45,7 @@ public class KlaytnTransaction {
         this.timestamp = timestamp;
     }
 
-    private void setValue(int value) {
+    private void setValue(double value) {
         this.value = value;
     }
 

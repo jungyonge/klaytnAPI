@@ -9,7 +9,6 @@ import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnTransaction;
 import app.klaytnapi.blockchainservice.domain.klaytn.KlaytnTransactionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
@@ -20,14 +19,14 @@ public class KlaytnBlockParsingHandler {
     private KlaytnTransactionRepository klaytnTransactionRepository;
     private KlaytnBlockRepository klaytnBlockRepository;
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public void updateKlaytnBlockNumber(KlaytnBlockStatus status, long blockNumber){
         KlaytnBlockNumber klaytnBlockNumber = klaytnBlockNumberRepository.getKlaytnBlockNumberByStatus(status);
         klaytnBlockNumber.updateBlockNumber(blockNumber);
         klaytnBlockNumberRepository.save(klaytnBlockNumber);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public void createKlaytnBlockNumber(){
         KlaytnBlockNumber klaytnBlockNumber = KlaytnBlockNumber.create(KlaytnBlockStatus.CURRENT_PARSING_BLOCK_NUMBER, 0);
         klaytnBlockNumberRepository.save(klaytnBlockNumber);
@@ -37,21 +36,22 @@ public class KlaytnBlockParsingHandler {
 
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    @Transactional(
+            readOnly = true)
     public long getKlaytnBlockNumber(KlaytnBlockStatus status){
         KlaytnBlockNumber klaytnBlockNumber = klaytnBlockNumberRepository.getKlaytnBlockNumberByStatus(status);
         return klaytnBlockNumber.getBlockNumber();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public void insertKlaytnTransaction(KlaytnTransaction klaytnTransaction){
         klaytnTransactionRepository.save(klaytnTransaction);
     }
 
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void insertKlaytnBlock(KlaytnBlock klaytnBlock){
+    @Transactional
+    public void insertKlaytnBlock(KlaytnBlock klaytnBlock, long blockNumber){
         klaytnBlockRepository.save(klaytnBlock);
+        updateKlaytnBlockNumber(KlaytnBlockStatus.CURRENT_PARSING_BLOCK_NUMBER, blockNumber);
     }
 
 }
