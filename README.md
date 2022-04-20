@@ -25,8 +25,8 @@
 | Method | Path                                     | Description | 
 |--------|------------------------------------------|-----------------------------------------------------------------|
 | GET    | /api/v1/klaytn/block                     | 블록을 조회합니다.
-| GET    | /api/v1/klaytn/transaction/smartContract | 스마트 컨트랙트 트랜잭션을 조회합니다.
-| GET    | /api/v1/klaytn/transaction/valueTransfer | value transfer 트랜잭션을 조회합니다.
+| GET    | /api/v1/klaytn/transaction/smartcontract | 스마트 컨트랙트 트랜잭션을 조회합니다.
+| GET    | /api/v1/klaytn/transaction/valuetransfer | value transfer 트랜잭션을 조회합니다.
 
 Swagger url  
 http://ec2-54-180-196-21.ap-northeast-2.compute.amazonaws.com:8080/swagger-ui.html

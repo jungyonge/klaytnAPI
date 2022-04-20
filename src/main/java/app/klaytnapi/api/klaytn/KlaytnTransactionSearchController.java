@@ -26,7 +26,7 @@ public class KlaytnTransactionSearchController {
         this.modelMapper = modelMapper;
     }
 
-    @GetMapping("/valueTransfer")
+    @GetMapping("/valuetransfer")
     public List<TransactionDto> getValueTransferTransaction(@RequestParam long from, @RequestParam long to,
             @RequestParam(required = false) @Nullable String address){
 
@@ -36,7 +36,7 @@ public class KlaytnTransactionSearchController {
         return list;
     }
 
-    @GetMapping("/smartContract")
+    @GetMapping("/smartcontract")
     public List<TransactionDto> getSmartContractTransaction(@RequestParam long from, @RequestParam long to,
             @RequestParam(required = false) @Nullable String txType){
 
