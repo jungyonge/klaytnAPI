@@ -27,7 +27,8 @@ public class KlaytnTransactionSearchController {
     }
 
     @GetMapping("/valueTransfer")
-    public List<TransactionDto> getValueTransferTransaction(@RequestParam long from, @RequestParam long to, @RequestParam @Nullable String address){
+    public List<TransactionDto> getValueTransferTransaction(@RequestParam long from, @RequestParam long to,
+            @RequestParam(required = false) @Nullable String address){
 
         var result = klaytnTransactionSearchHandler.getValueTransferTransaction(from, to, address);
         Type listType = new TypeToken<List<TransactionDto>>() {}.getType();
@@ -36,7 +37,8 @@ public class KlaytnTransactionSearchController {
     }
 
     @GetMapping("/smartContract")
-    public List<TransactionDto> getSmartContractTransaction(@RequestParam long from, @RequestParam long to, @RequestParam @Nullable String txType){
+    public List<TransactionDto> getSmartContractTransaction(@RequestParam long from, @RequestParam long to,
+            @RequestParam(required = false) @Nullable String txType){
 
         var result = klaytnTransactionSearchHandler.getSmartContractTransaction(from, to, txType);
         Type listType = new TypeToken<List<TransactionDto>>() {}.getType();

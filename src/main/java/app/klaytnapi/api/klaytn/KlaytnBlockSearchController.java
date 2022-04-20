@@ -27,7 +27,9 @@ public class KlaytnBlockSearchController {
     }
 
     @GetMapping
-    public List<BlockDto> getBlock(@RequestParam long from, @RequestParam long to, @RequestParam @Nullable Double totalKlayValues, @RequestParam @Nullable Integer transactionCount){
+    public List<BlockDto> getBlock(@RequestParam long from, @RequestParam long to,
+            @RequestParam(required = false) @Nullable Double totalKlayValues,
+            @RequestParam(required = false) @Nullable Integer transactionCount){
 
         var result = klaytnBlockSearchHandler.getBlock(from, to, totalKlayValues, transactionCount);
         Type listType = new TypeToken<List<BlockDto>>() {}.getType();

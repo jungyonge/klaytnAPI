@@ -54,7 +54,6 @@ public class KlaytnConsumer {
                                 transaction.get("from").toString(),
                                 transaction.get("to").toString());
                         klaytnBlockParsingHandler.insertKlaytnTransaction(klaytnTransaction);
-                        System.out.println("Transaction : " + transaction.get("hash"));
                     }
 
                     KlaytnBlock klaytnBlock = KlaytnBlock.create(String.valueOf(block.get("hash")),
