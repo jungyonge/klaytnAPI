@@ -34,7 +34,6 @@ public class KlaytnProducer {
 
         try {
             while (true){
-                System.out.println("blocknumber: " + currentParsingBlockNumber);
                 Map klaytnBlock = (Map) klaytnPublicNodeService.getBlockByNumber("0x" + Long.toHexString(currentParsingBlockNumber)).get("result");
                 KlaytnQueue.queue.put(klaytnBlock);
 

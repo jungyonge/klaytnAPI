@@ -50,7 +50,9 @@ public class KlaytnConsumer {
                         KlaytnTransaction klaytnTransaction = KlaytnTransaction.create(
                                 transaction.get("hash").toString(),
                                 transaction.get("type").toString(),
-                                value, blockNumber, timestamp);
+                                value, blockNumber, timestamp,
+                                transaction.get("from").toString(),
+                                transaction.get("to").toString());
                         klaytnBlockParsingHandler.insertKlaytnTransaction(klaytnTransaction);
                         totalKlayValues += value;
                         System.out.println("Transaction : " + transaction.get("hash"));
