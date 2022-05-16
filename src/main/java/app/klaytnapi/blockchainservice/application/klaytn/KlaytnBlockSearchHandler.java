@@ -14,7 +14,7 @@ public class KlaytnBlockSearchHandler {
 
     private final KlaytnBlockRepository klaytnBlockRepository;
 
-    public List<KlaytnBlock> getBlock(long from, long to, Double totalKlayValues, Integer transactionCount) {
+    public List<KlaytnBlock> getBlock(long from, long to, Double totalKlayValues, Integer transactionCount) throws DomainValidationException {
 
         List<KlaytnBlock> result;
         if (totalKlayValues != null) {
@@ -25,7 +25,7 @@ public class KlaytnBlockSearchHandler {
             result = klaytnBlockRepository.getBlock(from, to);
         }
 
-        if (result == null) {
+        if (result.isEmpty()) {
             throw new DomainValidationException(
                     BlockchainDomainValidationMessage.ERROR_NO_TRANSACTION);
         }

@@ -22,7 +22,7 @@ public class KlaytnTransactionSearchHandler {
             "TxTypeFeeDelegatedSmartContractExecution",
             "TxTypeFeeDelegatedSmartContractExecutionWithRatio");
 
-    public List<KlaytnTransaction> getValueTransferTransaction(long from, long to, String address) {
+    public List<KlaytnTransaction> getValueTransferTransaction(long from, long to, String address) throws DomainValidationException {
 
         List<KlaytnTransaction> result;
         if (address != null) {
@@ -32,7 +32,7 @@ public class KlaytnTransactionSearchHandler {
             result = klaytnTransactionRepository.getValueTransferTransaction(from, to);
         }
 
-        if (result == null) {
+        if (result.isEmpty()) {
             throw new DomainValidationException(
                     BlockchainDomainValidationMessage.ERROR_NO_TRANSACTION);
         }
@@ -40,7 +40,7 @@ public class KlaytnTransactionSearchHandler {
         return result;
     }
 
-    public List<KlaytnTransaction> getSmartContractTransaction(long from, long to, String txType) {
+    public List<KlaytnTransaction> getSmartContractTransaction(long from, long to, String txType) throws DomainValidationException {
 
         List<KlaytnTransaction> result;
         if (txType != null) {

@@ -2,6 +2,7 @@ package app.klaytnapi.api.klaytn;
 
 import app.klaytnapi.api.klaytn.response.BlockDto;
 import app.klaytnapi.blockchainservice.application.klaytn.KlaytnBlockSearchHandler;
+import app.klaytnapi.support.domain.DomainValidationException;
 import com.mongodb.lang.Nullable;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -29,7 +30,7 @@ public class KlaytnBlockSearchController {
     @GetMapping
     public List<BlockDto> getBlock(@RequestParam long from, @RequestParam long to,
             @RequestParam(required = false) @Nullable Double totalKlayValues,
-            @RequestParam(required = false) @Nullable Integer transactionCount){
+            @RequestParam(required = false) @Nullable Integer transactionCount) throws DomainValidationException {
 
         var result = klaytnBlockSearchHandler.getBlock(from, to, totalKlayValues, transactionCount);
         Type listType = new TypeToken<List<BlockDto>>() {}.getType();

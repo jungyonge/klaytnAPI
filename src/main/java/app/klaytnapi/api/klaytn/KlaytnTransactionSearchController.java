@@ -2,6 +2,7 @@ package app.klaytnapi.api.klaytn;
 
 import app.klaytnapi.api.klaytn.response.TransactionDto;
 import app.klaytnapi.blockchainservice.application.klaytn.KlaytnTransactionSearchHandler;
+import app.klaytnapi.support.domain.DomainValidationException;
 import com.mongodb.lang.Nullable;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -28,7 +29,7 @@ public class KlaytnTransactionSearchController {
 
     @GetMapping("/valuetransfer")
     public List<TransactionDto> getValueTransferTransaction(@RequestParam long from, @RequestParam long to,
-            @RequestParam(required = false) @Nullable String address){
+            @RequestParam(required = false) @Nullable String address) throws DomainValidationException {
 
         var result = klaytnTransactionSearchHandler.getValueTransferTransaction(from, to, address);
         Type listType = new TypeToken<List<TransactionDto>>() {}.getType();
@@ -38,7 +39,7 @@ public class KlaytnTransactionSearchController {
 
     @GetMapping("/smartcontract")
     public List<TransactionDto> getSmartContractTransaction(@RequestParam long from, @RequestParam long to,
-            @RequestParam(required = false) @Nullable String txType){
+            @RequestParam(required = false) @Nullable String txType) throws DomainValidationException {
 
         var result = klaytnTransactionSearchHandler.getSmartContractTransaction(from, to, txType);
         Type listType = new TypeToken<List<TransactionDto>>() {}.getType();

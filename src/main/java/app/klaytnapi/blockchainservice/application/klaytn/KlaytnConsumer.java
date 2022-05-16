@@ -36,7 +36,7 @@ public class KlaytnConsumer {
                 if (!KlaytnQueue.queue.isEmpty()) {
                     block = KlaytnQueue.queue.poll(1, TimeUnit.SECONDS);
 
-                    log.info(Thread.currentThread().getName() + " : "+ String.valueOf(KlaytnQueue.queue.size()));
+//                    log.info(Thread.currentThread().getName() + " : "+ String.valueOf(KlaytnQueue.queue.size()));
 
                     long timestamp = Long.parseLong(
                             block.get("timestamp").toString().replaceFirst("^0x", ""), 16);
