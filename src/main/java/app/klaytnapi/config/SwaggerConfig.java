@@ -35,7 +35,7 @@ public class SwaggerConfig {
                 .build();
 
         List<Parameter> globalParamters = new ArrayList<>();
-        globalParamters.add(parameterBuilder);
+//        globalParamters.add(parameterBuilder);
 
         return new Docket(DocumentationType.SWAGGER_2)
                 .globalOperationParameters(globalParamters)

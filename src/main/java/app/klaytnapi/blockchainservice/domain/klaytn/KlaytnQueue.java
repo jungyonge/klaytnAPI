@@ -5,6 +5,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 public class KlaytnQueue {
 
-    public static ArrayBlockingQueue<Map> queue = new ArrayBlockingQueue<>(300);
+    public static ArrayBlockingQueue<Map> queue = new ArrayBlockingQueue<>(10000);
 
 }

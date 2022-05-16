@@ -43,6 +43,7 @@ public class KlaytnProducer {
                     break;
                 }
                 currentParsingBlockNumber++;
+//                Thread.sleep(5);
             }
 
         } catch (InterruptedException e) {

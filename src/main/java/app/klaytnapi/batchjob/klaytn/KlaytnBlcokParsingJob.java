@@ -2,6 +2,7 @@ package app.klaytnapi.batchjob.klaytn;
 
 import app.klaytnapi.blockchainservice.application.klaytn.KlaytnConsumer;
 import app.klaytnapi.blockchainservice.application.klaytn.KlaytnProducer;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +28,8 @@ public class KlaytnBlcokParsingJob {
     }
 
     @Transactional
-    @Scheduled(fixedDelay = 300)
+    @Async
+    @Scheduled(fixedRate = 1)
     public void consumerJob() {
         klaytnConsumer.consumer();
     }

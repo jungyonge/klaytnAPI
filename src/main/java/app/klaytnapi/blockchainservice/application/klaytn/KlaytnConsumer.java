@@ -36,6 +36,8 @@ public class KlaytnConsumer {
                 if (!KlaytnQueue.queue.isEmpty()) {
                     block = KlaytnQueue.queue.poll(1, TimeUnit.SECONDS);
 
+                    log.info(Thread.currentThread().getName() + " : "+ String.valueOf(KlaytnQueue.queue.size()));
+
                     long timestamp = Long.parseLong(
                             block.get("timestamp").toString().replaceFirst("^0x", ""), 16);
                     long blockNumber = Long.parseLong(
@@ -45,15 +47,25 @@ public class KlaytnConsumer {
                     ArrayList<Map> transactions = (ArrayList<Map>) block.get("transactions");
 
                     for (Map transaction : transactions) {
-                        double value = Double.parseDouble(Utils.convertFromPeb(new BigDecimal(
-                                Numeric.toBigInt(transaction.get("value").toString())), KlayUnit.KLAY));
+                        double value = 0;
+                        if(transaction.get("value") != null){
+                            value = Double.parseDouble(Utils.convertFromPeb(new BigDecimal(
+                                    Numeric.toBigInt(transaction.get("value").toString())), KlayUnit.KLAY));                        }
+
+                        String to = null;
+                        if(transaction.get("to") != null){
+                            to = transaction.get("to").toString();
+                        }
                         KlaytnTransaction klaytnTransaction = KlaytnTransaction.create(
                                 transaction.get("hash").toString(),
                                 transaction.get("type").toString(),
                                 value, blockNumber, timestamp,
                                 transaction.get("from").toString(),
-                                transaction.get("to").toString());
+                                to);
                         klaytnBlockParsingHandler.insertKlaytnTransaction(klaytnTransaction);
+
+                        totalKlayValues = totalKlayValues + value;
+
                     }
 
                     KlaytnBlock klaytnBlock = KlaytnBlock.create(String.valueOf(block.get("hash")),
@@ -63,6 +75,7 @@ public class KlaytnConsumer {
                 } else {
                     break;
                 }
+//                Thread.sleep(100);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }

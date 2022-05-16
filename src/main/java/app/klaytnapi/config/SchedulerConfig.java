@@ -8,7 +8,7 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 @Configuration
 public class SchedulerConfig implements SchedulingConfigurer {
 
-    private static final int POOL_SIZE = 5;
+    private static final int POOL_SIZE = 50;
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar scheduledTaskRegistrar) {
