@@ -32,7 +32,7 @@ public class KlaytnBlockSearchController {
             @RequestParam(required = false) @Nullable Double totalKlayValues,
             @RequestParam(required = false) @Nullable Integer transactionCount) throws DomainValidationException {
 
-        var result = klaytnBlockSearchHandler.getBlock(from, to, totalKlayValues, transactionCount);
+        var result = klaytnBlockSearchHandler.getBlock(from - 1, to + 1, totalKlayValues, transactionCount);
         Type listType = new TypeToken<List<BlockDto>>() {}.getType();
         List<BlockDto> list = modelMapper.map(result, listType);
         return list;

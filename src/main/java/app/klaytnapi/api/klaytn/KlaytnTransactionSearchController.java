@@ -31,7 +31,7 @@ public class KlaytnTransactionSearchController {
     public List<TransactionDto> getValueTransferTransaction(@RequestParam long from, @RequestParam long to,
             @RequestParam(required = false) @Nullable String address) throws DomainValidationException {
 
-        var result = klaytnTransactionSearchHandler.getValueTransferTransaction(from, to, address);
+        var result = klaytnTransactionSearchHandler.getValueTransferTransaction(from - 1, to + 1, address);
         Type listType = new TypeToken<List<TransactionDto>>() {}.getType();
         List<TransactionDto> list = modelMapper.map(result, listType);
         return list;
@@ -41,7 +41,7 @@ public class KlaytnTransactionSearchController {
     public List<TransactionDto> getSmartContractTransaction(@RequestParam long from, @RequestParam long to,
             @RequestParam(required = false) @Nullable String txType) throws DomainValidationException {
 
-        var result = klaytnTransactionSearchHandler.getSmartContractTransaction(from, to, txType);
+        var result = klaytnTransactionSearchHandler.getSmartContractTransaction(from - 1, to + 1, txType);
         Type listType = new TypeToken<List<TransactionDto>>() {}.getType();
         List<TransactionDto> list = modelMapper.map(result, listType);
         return list;
